@@ -1,18 +1,28 @@
 import { create } from 'zustand';
-// import { Movie } from '@/types/movie';
+import { persist } from 'zustand/middleware';
+import type { Movie } from '@/types/movie';
 
-// TODO: Define your store state interface
 interface MovieStore {
-  // TODO: Add state properties
-  // Examples: favorites, watchlist, selectedMovie, etc.
-
-  // TODO: Add action methods
-  // Examples: addToFavorites, removeFromFavorites, etc.
+  favorites: Movie[];
+  addToFavorites: (movie: Movie) => void;
+  removeFromFavorites: (id: number) => void;
+  isFavorite: (id: number) => boolean;
 }
 
-// TODO: Create Zustand store
-// Reference: https://zustand.docs.pmnd.rs/getting-started/introduction
+export const useMovieStore = create<MovieStore>()(
+  // persist saves the store to localStorage automatically
+  persist(
+    (set, get) => ({
+      favorites: [],
 
-export const useMovieStore = create<MovieStore>((set) => ({
-  // TODO: Initialize state and implement actions
-}));
+      addToFavorites: (movie) =>
+        set((state) => ({ favorites: [...state.favorites, movie] })),
+
+      removeFromFavorites: (id) =>
+        set((state) => ({ favorites: state.favorites.filter((m) => m.id !== id) })),
+
+      isFavorite: (id) => get().favorites.some((m) => m.id === id),
+    }),
+    { name: 'movie-favorites' } // localStorage key
+  )
+);

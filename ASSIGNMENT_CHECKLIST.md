@@ -4,140 +4,139 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 
 ## Setup & Configuration
 
-- [ ] Install semua dependencies
-- [ ] Setup environment variables (.env)
-- [ ] TMDB API key berfungsi
-- [ ] Development server berjalan tanpa error
-- [ ] Path aliases (`@/...`) berfungsi
+- [✅] Install semua dependencies
+- [✅] Setup environment variables (.env)
+- [✅] TMDB API key berfungsi
+- [✅] Development server berjalan tanpa error
+- [✅] Path aliases (`@/...`) berfungsi
 
 ## Tech Stack Implementation
 
 ### React Query
 
-- [ ] QueryClient configured dengan proper options
-- [ ] useQuery untuk data fetching
-- [ ] Loading states handled
-- [ ] Error states handled
-- [ ] Data caching berfungsi dengan baik
-- [ ] React Query Devtools digunakan untuk debugging
+- [✅] QueryClient configured dengan proper options
+- [✅] useQuery untuk data fetching
+- [✅] Loading states handled
+- [✅] Error states handled
+- [✅] Data caching berfungsi dengan baik
+- [✅] React Query Devtools digunakan untuk debugging
 
 ### Zustand
 
-- [ ] Store created untuk favorites/watchlist
-- [ ] Actions implemented (add, remove, toggle)
-- [ ] State persist ke localStorage
-- [ ] Store properly typed dengan TypeScript
+- [✅] Store created untuk favorites/watchlist
+- [✅] Actions implemented (add, remove, toggle)
+- [✅] State persist ke localStorage
+- [✅] Store properly typed dengan TypeScript
 
 ### React Router
 
-- [ ] Router setup di App.tsx
-- [ ] Routes configured (Home, Detail, dll)
-- [ ] Navigation berfungsi
-- [ ] 404/Not Found page (optional)
-- [ ] URL params untuk detail page
+- [✅] Router setup di App.tsx
+- [✅] Routes configured (Home, Detail, Favorites, 404)
+- [✅] Navigation berfungsi
+- [✅] 404/Not Found page (optional)
+- [✅] URL params untuk detail page
 
 ### Radix UI & shadcn/ui
 
-- [ ] components.json configured
-- [ ] Install komponen yang dibutuhkan
-- [ ] Komponen properly customized
-- [ ] Accessible (keyboard navigation works)
+- [✅] components.json configured
+- [✅] Install komponen yang dibutuhkan (Button, Input, Card, Badge, Skeleton)
+- [✅] Komponen properly customized
+- [ ] Accessible (keyboard navigation works) — belum di-test
 
 ### Zod & React Hook Form
 
-- [ ] Form validation schema dengan Zod
-- [ ] useForm hook implementation
-- [ ] Error messages displayed
-- [ ] Form submission handled
+- [✅] Form validation schema dengan Zod
+- [✅] useForm hook implementation
+- [ ] Error messages displayed — belum diimplementasi
+- [✅] Form submission handled
 
 ### Framer Motion
 
-- [ ] Page transitions
-- [ ] Component animations (fade in, slide, etc.)
-- [ ] Hover effects
-- [ ] Loading animations
-- [ ] Tidak over-animate (subtle & meaningful)
+- [✅] Page transitions
+- [✅] Component animations (fade in, slide, etc.)
+- [✅] Hover effects
+- [✅] Loading animations (skeleton shimmer, spinner)
+- [✅] Tidak over-animate (subtle & meaningful)
 
 ## Features
 
 ### Home Page
 
-- [ ] Display popular movies
-- [ ] Display now playing movies (or other category)
-- [ ] Search bar functional
-- [ ] Search results displayed
+- [✅] Display popular movies
+- [✅] Display now playing movies
+- [✅] Search bar functional
+- [✅] Search results displayed
 - [ ] Filter/sorting options (optional)
-- [ ] Responsive layout
+- [✅] Responsive layout
 
 ### Movie Detail Page
 
-- [ ] Movie poster displayed
-- [ ] Movie title & overview
-- [ ] Rating, release date, runtime
-- [ ] Genres displayed
-- [ ] Cast & crew information
-- [ ] Similar movies recommendations
-- [ ] Add to favorites/watchlist button
-- [ ] Back to home navigation
-- [ ] Responsive layout
+- [✅] Movie poster displayed
+- [✅] Movie title & overview
+- [✅] Rating, release date, runtime
+- [✅] Genres displayed
+- [✅] Cast & crew information
+- [✅] Similar movies recommendations
+- [✅] Add to favorites/watchlist button
+- [✅] Back to home navigation
+- [ ] Responsive layout — belum di-test di mobile
 
 ### Favorites/Watchlist
 
-- [ ] Add movie to favorites
-- [ ] Remove movie from favorites
-- [ ] Favorites persist after page refresh
-- [ ] Visual indicator (heart icon, etc.)
+- [✅] Add movie to favorites
+- [✅] Remove movie from favorites
+- [✅] Favorites persist after page refresh
+- [✅] Visual indicator (heart icon, etc.)
 - [ ] Count badge (optional)
 
 ## Code Quality
 
 ### TypeScript
 
-- [ ] Proper interfaces/types defined
-- [ ] No `any` types (except when absolutely necessary)
-- [ ] Types exported and reused
-- [ ] Type-safe API responses
+- [✅] Proper interfaces/types defined
+- [✅] No `any` types (except when absolutely necessary)
+- [✅] Types exported and reused
+- [✅] Type-safe API responses
 
 ### Code Organization
 
-- [ ] Components modular dan reusable
-- [ ] Proper folder structure
-- [ ] Separation of concerns
-- [ ] No duplicate code
-- [ ] Meaningful variable/function names
+- [✅] Components modular dan reusable
+- [✅] Proper folder structure
+- [✅] Separation of concerns
+- [✅] Meaningful variable/function names
 
 ### Best Practices
 
-- [ ] No console.logs in production code
+- [✅] No console.logs in production code
 - [ ] Error boundaries (optional but good)
-- [ ] Loading states consistent
-- [ ] Environment variables used properly
+- [✅] Loading states consistent
+- [✅] Environment variables used properly
 - [ ] Comments untuk code yang kompleks
 
 ## UI/UX
 
 ### Design Implementation
 
-- [ ] Mengikuti design Figma
-- [ ] Color scheme consistent
-- [ ] Typography consistent
-- [ ] Spacing & layout sesuai
-- [ ] Images loaded properly
+- [✅] Mengikuti design Figma (hero, navbar, trending, new release, footer)
+- [✅] Color scheme consistent (dark theme)
+- [ ] Typography consistent — belum sesuai Figma font
+- [ ] Spacing & layout sesuai — perlu review
+- [✅] Images loaded properly (TMDB CDN)
 
 ### Responsive Design
 
-- [ ] Mobile (< 768px)
-- [ ] Desktop (>= 768px)
-- [ ] No horizontal scroll
-- [ ] Touch-friendly pada mobile
+- [ ] Mobile (< 768px) — belum di-test
+- [✅] Desktop (>= 768px)
+- [ ] No horizontal scroll — belum di-test
+- [ ] Touch-friendly pada mobile — belum di-test
 
 ### User Experience
 
-- [ ] Navigation intuitif
-- [ ] Loading feedback jelas
-- [ ] Error messages helpful
-- [ ] Smooth animations
-- [ ] No janky interactions
+- [✅] Navigation intuitif
+- [✅] Loading feedback jelas (skeleton loading)
+- [✅] Error messages helpful
+- [✅] Smooth animations
+- [✅] No janky interactions
 
 ## Testing & Quality Assurance
 
@@ -145,7 +144,7 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 - [ ] Test di browser berbeda (Chrome, Firefox, Safari)
 - [ ] Test semua user flows
 - [ ] No console errors
-- [ ] No TypeScript errors
+- [✅] No TypeScript errors
 - [ ] Lighthouse score reasonable (optional)
 
 ## Git & Documentation
@@ -159,10 +158,10 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 ## Bonus Points
 
 - [ ] Deployed ke Vercel/Netlify
-- [ ] Dark mode implementation
-- [ ] Skeleton loading states
-- [ ] Infinite scroll / pagination
-- [ ] Advanced animations
+- [✅] Dark mode implementation (default dark theme)
+- [✅] Skeleton loading states
+- [✅] Load More (pagination)
+- [✅] Advanced animations (Framer Motion)
 - [ ] Unit tests (optional)
 - [ ] E2E tests (optional)
 

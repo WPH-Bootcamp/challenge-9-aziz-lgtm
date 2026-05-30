@@ -10,8 +10,9 @@ import App from './App.tsx';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // TODO: Configure default query options
-      // Examples: refetchOnWindowFocus, retry, staleTime, etc.
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 5 * 60 * 1000, // cache data for 5 minutes before refetching
     },
   },
 });

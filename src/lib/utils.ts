@@ -10,11 +10,13 @@ export function cn(...inputs: ClassValue[]) {
 // Hint: TMDB returns relative paths, you need to construct full image URLs
 // Reference: https://developer.themoviedb.org/docs/image-basics
 
-export function getImageUrl(path: string, size: string = 'original'): string {
-  // TODO: Implement image URL construction
-  // Use VITE_TMDB_IMAGE_BASE_URL from environment variables
-  return '';
+export function getImageUrl(path: string | null, size = 'w342'): string | null {
+  if (!path) return null;
+  return `${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}/${size}${path}`;
 }
 
-// TODO: Add more utility functions as needed
-// Examples: formatDate, formatRuntime, etc.
+export function formatRuntime(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
