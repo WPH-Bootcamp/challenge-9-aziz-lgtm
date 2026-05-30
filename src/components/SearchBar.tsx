@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function SearchBar({ onSearch }: Props) {
-  const { register, handleSubmit, reset } = useForm<FormValues>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
@@ -29,16 +29,25 @@ export default function SearchBar({ onSearch }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
-      <Input
-        {...register('query')}
-        placeholder="Search movies..."
-        className="w-48"
-      />
-      <Button type="submit" size="sm">Search</Button>
-      <Button type="button" size="sm" variant="outline" onClick={handleClear}>
-        Clear
-      </Button>
-    </form>
+    <div className="flex flex-col gap-1">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
+        <Input
+          {...register('query')}
+          placeholder="Search movies..."
+          className={`w-48 ${errors.query ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+          aria-invalid={!!errors.query}
+          aria-describedby={errors.query ? 'search-error' : undefined}
+        />
+        <Button type="submit" size="sm">Search</Button>
+        <Button type="button" size="sm" variant="outline" onClick={handleClear}>
+          Clear
+        </Button>
+      </form>
+      {errors.query && (
+        <p id="search-error" role="alert" className="text-xs text-red-400">
+          {errors.query.message}
+        </p>
+      )}
+    </div>
   );
 }

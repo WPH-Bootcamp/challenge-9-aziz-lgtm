@@ -6,8 +6,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import movieLogo from '@/assets/hero/movie_logo.png';
+import { useMovieStore } from '@/store/movieStore';
 
-const schema = z.object({ query: z.string().min(1) });
+const schema = z.object({ query: z.string().min(1, 'Enter a movie title') });
 type FormValues = z.infer<typeof schema>;
 
 interface Props {
@@ -18,7 +19,8 @@ export default function Navbar({ onSearch }: Props) {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { register, handleSubmit, reset } = useForm<FormValues>({
+  const favCount = useMovieStore(s => s.favorites.length);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
@@ -63,21 +65,37 @@ export default function Navbar({ onSearch }: Props) {
           {/* Nav links — hidden on mobile */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
             <Link to="/" className={navLinkClass('/')} aria-current={location.pathname === '/' ? 'page' : undefined}>Home</Link>
-            <Link to="/favorites" className={navLinkClass('/favorites')} aria-current={location.pathname === '/favorites' ? 'page' : undefined}>Favorites</Link>
+            <Link to="/favorites" className={`${navLinkClass('/favorites')} flex items-center gap-1.5`} aria-current={location.pathname === '/favorites' ? 'page' : undefined}>
+              Favorites
+              {favCount > 0 && (
+                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                  {favCount > 99 ? '99+' : favCount}
+                </span>
+              )}
+            </Link>
           </nav>
 
           {/* Desktop search */}
-          <form onSubmit={handleSubmit(onSubmit)} role="search" className="hidden md:flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-            <Search className="w-4 h-4 text-white/50" aria-hidden="true" />
-            <input
-              {...register('query')}
-              placeholder="Search Movie"
-              aria-label="Search movies"
-              className="bg-transparent text-sm text-white placeholder-white/40 outline-none focus-visible:outline-none w-36"
-              onKeyDown={(e) => { if (e.key === 'Escape') handleClear(); }}
-            />
-            <button type="submit" className="sr-only">Search</button>
-          </form>
+          <div className="hidden md:flex flex-col items-end gap-1">
+            <form onSubmit={handleSubmit(onSubmit)} role="search" className={`flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 ${errors.query ? 'ring-1 ring-red-500' : ''}`}>
+              <Search className="w-4 h-4 text-white/50" aria-hidden="true" />
+              <input
+                {...register('query')}
+                placeholder="Search Movie"
+                aria-label="Search movies"
+                aria-invalid={!!errors.query}
+                aria-describedby={errors.query ? 'navbar-search-error' : undefined}
+                className="bg-transparent text-sm text-white placeholder-white/40 outline-none focus-visible:outline-none w-36"
+                onKeyDown={(e) => { if (e.key === 'Escape') handleClear(); }}
+              />
+              <button type="submit" className="sr-only">Search</button>
+            </form>
+            {errors.query && (
+              <p id="navbar-search-error" role="alert" className="text-xs text-red-400 px-2">
+                {errors.query.message}
+              </p>
+            )}
+          </div>
 
           {/* Mobile controls */}
           <div className="flex md:hidden items-center gap-4">
@@ -117,18 +135,33 @@ export default function Navbar({ onSearch }: Props) {
           >
             <div className="container mx-auto px-6 py-4 flex flex-col gap-4">
               <Link to="/" className={navLinkClass('/')}>Home</Link>
-              <Link to="/favorites" className={navLinkClass('/favorites')}>Favorites</Link>
-              <form onSubmit={handleSubmit(onSubmit)} role="search" className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                <Search className="w-4 h-4 text-white/50" aria-hidden="true" />
-                <input
-                  {...register('query')}
-                  placeholder="Search Movie"
-                  aria-label="Search movies"
-                  className="bg-transparent text-sm text-white placeholder-white/40 outline-none w-full"
-                  onKeyDown={(e) => { if (e.key === 'Escape') handleClear(); }}
-                />
-                <button type="submit" className="sr-only">Search</button>
-              </form>
+              <Link to="/favorites" className={`${navLinkClass('/favorites')} flex items-center gap-1.5`}>
+                Favorites
+                {favCount > 0 && (
+                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                    {favCount > 99 ? '99+' : favCount}
+                  </span>
+                )}
+              </Link>
+              <div className="flex flex-col gap-1">
+                <form onSubmit={handleSubmit(onSubmit)} role="search" className={`flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 ${errors.query ? 'ring-1 ring-red-500' : ''}`}>
+                  <Search className="w-4 h-4 text-white/50" aria-hidden="true" />
+                  <input
+                    {...register('query')}
+                    placeholder="Search Movie"
+                    aria-label="Search movies"
+                    aria-invalid={!!errors.query}
+                    className="bg-transparent text-sm text-white placeholder-white/40 outline-none w-full"
+                    onKeyDown={(e) => { if (e.key === 'Escape') handleClear(); }}
+                  />
+                  <button type="submit" className="sr-only">Search</button>
+                </form>
+                {errors.query && (
+                  <p role="alert" className="text-xs text-red-400 px-2">
+                    {errors.query.message}
+                  </p>
+                )}
+              </div>
             </div>
           </motion.div>
         )}

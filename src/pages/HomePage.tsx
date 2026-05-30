@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Movie } from '@/types/movie';
 import { motion } from 'framer-motion';
@@ -10,6 +10,7 @@ import MovieCard from '@/components/MovieCard';
 import MovieCardSkeleton from '@/components/MovieCardSkeleton';
 import Footer from '@/components/Footer';
 import PageTransition from '@/components/PageTransition';
+import FilterBar, { type SortOption } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
 
 const SKELETON_COUNT = 5;
@@ -18,6 +19,8 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [newReleasePage, setNewReleasePage] = useState(1);
   const [allNewReleaseMovies, setAllNewReleaseMovies] = useState<Movie[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>('popularity');
+  const [activeGenre, setActiveGenre] = useState<number | null>(null);
 
   const { data: nowPlaying, isLoading: loadingNowPlaying } = useQuery({
     queryKey: ['movies', 'now_playing'],
@@ -31,6 +34,8 @@ export default function HomePage() {
     enabled: !searchQuery,
   });
 
+  // Reset to page 1's results instead of appending when newReleasePage resets to 1
+  // (e.g. after a sort/filter change), otherwise stale movies from the old query accumulate.
   useEffect(() => {
     if (!newRelease?.results) return;
     setAllNewReleaseMovies((prev) =>
@@ -43,6 +48,26 @@ export default function HomePage() {
     queryFn: () => movieService.searchMovies(searchQuery),
     enabled: !!searchQuery,
   });
+
+  const filteredNewRelease = useMemo(() => {
+    const base = activeGenre ? allNewReleaseMovies.filter(m => m.genre_ids.includes(activeGenre)) : allNewReleaseMovies;
+    return [...base].sort((a, b) => {
+      if (sortBy === 'rating') return b.vote_average - a.vote_average;
+      if (sortBy === 'date')   return new Date(b.release_date).getTime() - new Date(a.release_date).getTime();
+      if (sortBy === 'title')  return a.title.localeCompare(b.title);
+      return b.popularity - a.popularity;
+    });
+  }, [allNewReleaseMovies, sortBy, activeGenre]);
+
+  const filteredSearchResults = useMemo(() => {
+    const base = activeGenre ? (searchResults?.results ?? []).filter(m => m.genre_ids.includes(activeGenre)) : (searchResults?.results ?? []);
+    return [...base].sort((a, b) => {
+      if (sortBy === 'rating') return b.vote_average - a.vote_average;
+      if (sortBy === 'date')   return new Date(b.release_date).getTime() - new Date(a.release_date).getTime();
+      if (sortBy === 'title')  return a.title.localeCompare(b.title);
+      return b.popularity - a.popularity;
+    });
+  }, [searchResults, sortBy, activeGenre]);
 
   const heroMovie = nowPlaying?.results[0];
 
@@ -58,9 +83,19 @@ export default function HomePage() {
 
         <main className="container mx-auto px-6 py-10 space-y-14">
 
+          {/* Filter / Sort bar — shown for both search and browse */}
+          <div className={searchQuery ? 'pt-24' : ''}>
+            <FilterBar
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              activeGenre={activeGenre}
+              onGenreChange={setActiveGenre}
+            />
+          </div>
+
           {/* Search Results */}
           {searchQuery && (
-            <section className="pt-24">
+            <section>
               <h2 className="text-xl font-bold text-white mb-6">
                 Results for &quot;{searchQuery}&quot;
               </h2>
@@ -71,11 +106,11 @@ export default function HomePage() {
               ) : (
                 <>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {searchResults?.results.map((movie) => (
+                    {filteredSearchResults.map((movie) => (
                       <MovieCard key={movie.id} movie={movie} />
                     ))}
                   </div>
-                  {searchResults?.results.length === 0 && (
+                  {filteredSearchResults.length === 0 && (
                     <p className="text-muted-foreground">No movies found.</p>
                   )}
                 </>
@@ -131,7 +166,7 @@ export default function HomePage() {
                       animate="show"
                       variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}
                     >
-                      {allNewReleaseMovies.map((movie) => (
+                      {filteredNewRelease.map((movie) => (
                         <MovieCard key={movie.id} movie={movie} />
                       ))}
                     </motion.div>

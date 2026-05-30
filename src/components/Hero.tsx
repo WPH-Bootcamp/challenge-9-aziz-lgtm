@@ -33,7 +33,7 @@ export default function Hero({ movie }: Props) {
         />
 </div>
 
-<div>
+<div >
         {/* Content overlay — top: 223px, centered, width: 361px */}
         <motion.div
           className="absolute flex flex-col items-start gap-6 top-55.75 left-1/2 -translate-x-1/2 w-90.25 h-77.5"

@@ -47,7 +47,7 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 
 - [✅] Form validation schema dengan Zod
 - [✅] useForm hook implementation
-- [ ] Error messages displayed — belum diimplementasi
+- [✅] Error messages displayed
 - [✅] Form submission handled
 
 ### Framer Motion
@@ -66,7 +66,7 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 - [✅] Display now playing movies
 - [✅] Search bar functional
 - [✅] Search results displayed
-- [ ] Filter/sorting options (optional)
+- [✅] Filter/sorting options (optional)
 - [✅] Responsive layout
 
 ### Movie Detail Page
@@ -87,7 +87,7 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 - [✅] Remove movie from favorites
 - [✅] Favorites persist after page refresh
 - [✅] Visual indicator (heart icon, etc.)
-- [ ] Count badge (optional)
+- [✅] Count badge (optional)
 
 ## Code Quality
 
@@ -108,10 +108,10 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 ### Best Practices
 
 - [✅] No console.logs in production code
-- [ ] Error boundaries (optional but good)
+- [✅] Error boundaries (optional but good)
 - [✅] Loading states consistent
 - [✅] Environment variables used properly
-- [ ] Comments untuk code yang kompleks
+- [✅] Comments untuk code yang kompleks
 
 ## UI/UX
 
