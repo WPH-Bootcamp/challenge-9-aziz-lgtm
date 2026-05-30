@@ -70,7 +70,7 @@ export default function MovieDetailPage() {
         {/* Backdrop */}
         {backdrop && (
           <motion.div
-            className="h-64 md:h-96 bg-cover bg-center relative"
+            className="h-64 md:h-96 lg:h-112 xl:h-128 bg-cover bg-center relative"
             style={{ backgroundImage: `url(${backdrop})` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -135,6 +135,8 @@ export default function MovieDetailPage() {
                 <Button
                   onClick={() => favorited ? removeFromFavorites(movie.id) : addToFavorites(movie)}
                   variant={favorited ? 'destructive' : 'default'}
+                  aria-pressed={favorited}
+                  aria-label={favorited ? `Remove ${movie.title} from favorites` : `Add ${movie.title} to favorites`}
                 >
                   {favorited ? '♥ Remove from Favorites' : '♡ Add to Favorites'}
                 </Button>
@@ -196,7 +198,7 @@ export default function MovieDetailPage() {
               transition={{ duration: 0.4, delay: 0.3 }}
             >
               <h2 className="text-xl font-semibold mb-4">Similar Movies</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {similar.results.slice(0, 10).map((m) => (
                   <MovieCard key={m.id} movie={m} />
                 ))}

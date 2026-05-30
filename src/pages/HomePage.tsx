@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import type { Movie } from '@/types/movie';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { movieService } from '@/services/movieService';
@@ -16,6 +17,7 @@ const SKELETON_COUNT = 5;
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [newReleasePage, setNewReleasePage] = useState(1);
+  const [allNewReleaseMovies, setAllNewReleaseMovies] = useState<Movie[]>([]);
 
   const { data: nowPlaying, isLoading: loadingNowPlaying } = useQuery({
     queryKey: ['movies', 'now_playing'],
@@ -29,11 +31,12 @@ export default function HomePage() {
     enabled: !searchQuery,
   });
 
-  const { data: prevNewRelease } = useQuery({
-    queryKey: ['movies', 'upcoming', newReleasePage - 1],
-    queryFn: () => movieService.getUpcomingMovies(newReleasePage - 1),
-    enabled: !searchQuery && newReleasePage > 1,
-  });
+  useEffect(() => {
+    if (!newRelease?.results) return;
+    setAllNewReleaseMovies((prev) =>
+      newReleasePage === 1 ? newRelease.results : [...prev, ...newRelease.results]
+    );
+  }, [newRelease, newReleasePage]);
 
   const { data: searchResults, isLoading: loadingSearch } = useQuery({
     queryKey: ['movies', 'search', searchQuery],
@@ -42,13 +45,6 @@ export default function HomePage() {
   });
 
   const heroMovie = nowPlaying?.results[0];
-
-  // Accumulate new release movies across pages
-  const prevMovies = prevNewRelease?.results ?? [];
-  const currentMovies = newRelease?.results ?? [];
-  const allNewReleaseMovies = newReleasePage > 1
-    ? [...prevMovies, ...currentMovies]
-    : currentMovies;
 
   const hasMore = newRelease ? newReleasePage < newRelease.total_pages : false;
 
@@ -69,12 +65,12 @@ export default function HomePage() {
                 Results for &quot;{searchQuery}&quot;
               </h2>
               {loadingSearch ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                   {Array.from({ length: 10 }).map((_, i) => <MovieCardSkeleton key={i} />)}
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {searchResults?.results.map((movie) => (
                       <MovieCard key={movie.id} movie={movie} />
                     ))}
@@ -124,13 +120,13 @@ export default function HomePage() {
                 <h2 className="text-xl font-bold text-white mb-6">New Release</h2>
 
                 {loadingNewRelease && newReleasePage === 1 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {Array.from({ length: 10 }).map((_, i) => <MovieCardSkeleton key={i} />)}
                   </div>
                 ) : (
                   <>
                     <motion.div
-                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
                       initial="hidden"
                       animate="show"
                       variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}

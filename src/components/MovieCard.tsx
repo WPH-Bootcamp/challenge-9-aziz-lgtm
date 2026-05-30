@@ -19,11 +19,10 @@ export default function MovieCard({ movie, rank }: Props) {
       transition={{ duration: 0.25 }}
       whileHover={{ scale: 1.04 }}
     >
-      <Link to={`/movie/${movie.id}`} className="block">
+      <Link to={`/movie/${movie.id}`} className="block focus-visible:outline-2 focus-visible:outline-white focus-visible:rounded-xl" aria-label={`View details for ${movie.title}`}>
         <div className="overflow-hidden rounded-xl bg-card shadow-sm relative">
-          {/* Rank badge */}
           {rank !== undefined && (
-            <span className="absolute top-2 left-2 z-10 bg-black/70 text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center">
+            <span aria-hidden="true" className="absolute top-2 left-2 z-10 bg-black/70 text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center">
               {rank}
             </span>
           )}

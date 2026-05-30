@@ -41,7 +41,7 @@ Gunakan checklist ini untuk memastikan semua requirement sudah terpenuhi.
 - [✅] components.json configured
 - [✅] Install komponen yang dibutuhkan (Button, Input, Card, Badge, Skeleton)
 - [✅] Komponen properly customized
-- [ ] Accessible (keyboard navigation works) — belum di-test
+- [✅] Accessible (keyboard navigation works)
 
 ### Zod & React Hook Form
 
