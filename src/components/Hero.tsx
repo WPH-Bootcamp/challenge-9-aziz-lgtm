@@ -22,39 +22,38 @@ export default function Hero({ movie }: Props) {
   return (
     <>
       {/* ── Mobile layout ── */}
-      <div className="md:hidden relative w-full h-[533px]">
-        {/* Rectangle 1 — fade gradient from transparent to black */}
-        <div className="absolute w-[392.5px] h-55.25 left-1/2 -translate-x-1/2 bottom-0 bg-linear-to-b from-transparent to-black" />
-        {/* Backdrop image fills container */}
-        <img
-          src={backdrop ?? undefined}
-          alt={movie.title}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-</div>
+      <div className="md:hidden">
+        {/* Hero image — 1:1 square with bottom fade */}
+        <div className="relative w-full aspect-square">
+          <img
+            src={backdrop ?? undefined}
+            alt={movie.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-b from-transparent to-black" />
+        </div>
 
-<div >
-        {/* Content overlay — top: 223px, centered, width: 361px */}
+        {/* Content — pulled up to straddle hero bottom edge */}
         <motion.div
-          className="absolute flex flex-col items-start gap-6 top-55.75 left-1/2 -translate-x-1/2 w-90.25 h-77.5"
+          className="relative z-10 -mt-45 flex flex-col gap-6 px-4 pb-6"
           {...contentMotion}
         >
-          <h1 className="font-bold self-stretch font-poppins text-2xl leading-9 text-[#FDFDFD]">
+          <h1 className="font-bold font-poppins text-2xl leading-9 text-[#FDFDFD]">
             {movie.title}
           </h1>
-          <p className="h-35 font-poppins font-normal text-sm leading-7 text-[#A4A7AE] flex-none self-stretch">
+          <p className="font-poppins font-normal text-sm leading-7 text-[#A4A7AE]">
             {movie.overview}
           </p>
-          <div className="flex flex-col gap-3 self-stretch">
+          <div className="flex flex-col gap-3">
             <Button
-              className="w-full bg-primary hover:bg-primary/90 text-white rounded-full gap-2"
+              className="w-full bg-[#961200] hover:bg-primary/70 hover:scale-101 text-white rounded-full gap-2 cursor-pointer"
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
               Watch Trailer
               <img src={playVector} alt="" className="w-4 h-4" />
             </Button>
             <Button
-              className="w-full rounded-full text-white bg-black hover:bg-black/80 border-0"
+              className="w-full rounded-full text-white bg-transparent hover:bg-gray-400/10 hover:scale-101 border border-gray-800 cursor-pointer"
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
               See Detail

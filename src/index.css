@@ -1,17 +1,24 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @theme {
   --font-poppins: 'Poppins', sans-serif;
-  --color-background: #0f0f1a;
+  --color-background: #000000;
   --color-foreground: #ffffff;
-  --color-card: #1a1a2e;
+  --color-card: #111111;
   --color-card-foreground: #ffffff;
   --color-primary: #e53935;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #2a2a3e;
+  --color-secondary: #1a1a1a;
   --color-secondary-foreground: #ffffff;
-  --color-muted: #2a2a3e;
+  --color-muted: #1a1a1a;
   --color-muted-foreground: #9ca3af;
   --color-accent: #e53935;
   --color-accent-foreground: #ffffff;
