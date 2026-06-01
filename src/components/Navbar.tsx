@@ -56,7 +56,7 @@ export default function Navbar({ onSearch }: Props) {
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="md:mx-17.5 lg:mx-11xl px-6 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link to="/">
             <img src={movieLogo} alt="Movie" className="h-8 object-contain" />
@@ -133,7 +133,7 @@ export default function Navbar({ onSearch }: Props) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
-            <div className="container mx-auto px-6 py-4 flex flex-col gap-4">
+            <div className="md:mx-17.5 lg:mx-11xl px-6 py-4 flex flex-col gap-4">
               <Link to="/" className={navLinkClass('/')}>Home</Link>
               <Link to="/favorites" className={`${navLinkClass('/favorites')} flex items-center gap-1.5`}>
                 Favorites

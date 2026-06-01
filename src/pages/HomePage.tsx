@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import PageTransition from '@/components/PageTransition';
 import FilterBar, { type SortOption } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
+import dataIsntFound from '@/assets/vector_clip/data_isnt_found.png';
 
 const SKELETON_COUNT = 5;
 
@@ -104,13 +105,13 @@ export default function HomePage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <Navbar onSearch={setSearchQuery} />
 
         {/* Hero */}
         {!searchQuery && heroMovie && <Hero movie={heroMovie} />}
 
-        <main className="container mx-auto px-6 py-10 space-y-14">
+        <main className="md:mx-17.5 lg:mx-11xl px-6 py-10 space-y-14">
 
           {/* Filter / Sort bar — shown for both search and browse */}
           <div className={searchQuery ? 'pt-24' : ''}>
@@ -140,7 +141,16 @@ export default function HomePage() {
                     ))}
                   </div>
                   {filteredSearchResults.length === 0 && (
-                    <p className="text-muted-foreground">No movies found.</p>
+                    <motion.div
+                      className="flex flex-col items-center justify-center py-24 gap-4"
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <img src={dataIsntFound} alt="Data not found" className="w-36 h-36 object-contain opacity-80" />
+                      <p className="text-white font-semibold text-base">Data Not Found</p>
+                      <p className="text-muted-foreground text-sm">Try other keywords</p>
+                    </motion.div>
                   )}
                 </>
               )}
@@ -169,7 +179,7 @@ export default function HomePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="relative py-4">
+                      <div className="relative py-4 md:-mr-17.5 lg:mr-0">
                         {/* Left fade + prev button */}
                         {canPrev && (
                           <>

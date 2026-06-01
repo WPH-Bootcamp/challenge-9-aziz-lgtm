@@ -1,14 +1,22 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { Calendar, Play, Heart, Star, Video, Bot } from 'lucide-react';
 import { movieService } from '@/services/movieService';
 import { useMovieStore } from '@/store/movieStore';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import MovieCard from '@/components/MovieCard';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import PageTransition from '@/components/PageTransition';
-import { getImageUrl, formatRuntime } from '@/lib/utils';
+import { getImageUrl } from '@/lib/utils';
+
+function formatDate(dateStr?: string) {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
 
 export default function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,11 +37,6 @@ export default function MovieDetailPage() {
   const { data: videos } = useQuery({
     queryKey: ['movie', movieId, 'videos'],
     queryFn: () => movieService.getMovieVideos(movieId),
-  });
-
-  const { data: similar } = useQuery({
-    queryKey: ['movie', movieId, 'similar'],
-    queryFn: () => movieService.getSimilarMovies(movieId),
   });
 
   if (isLoading) {
@@ -62,38 +65,48 @@ export default function MovieDetailPage() {
   const topCast = credits?.cast.slice(0, 8) ?? [];
   const backdrop = getImageUrl(movie.backdrop_path, 'w1280');
   const poster = getImageUrl(movie.poster_path, 'w342');
+  const firstGenre = movie.genres?.[0]?.name ?? '—';
+  const ageLimit = movie.adult ? 18 : 13;
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-background">
+      <div className="relative min-h-screen bg-background">
         <Navbar onSearch={() => {}} />
+
         {/* Backdrop */}
         {backdrop && (
           <motion.div
-            className="h-64 md:h-96 lg:h-112 xl:h-128 bg-cover bg-center relative"
-            style={{ backgroundImage: `url(${backdrop})` }}
+            style={{
+              position: 'absolute',
+              height: '810px',
+              left: '0px',
+              top: '0px',
+              width: '100%',
+              borderRadius: '0px',
+              backgroundImage: `url(${backdrop})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent" />
           </motion.div>
         )}
 
-        <div className="container mx-auto px-4 pt-24 pb-8">
-          <Link to="/">
-            <Button variant="ghost" size="sm" className="mb-6 text-white/70 hover:text-white">
-              ← Back to Home
-            </Button>
-          </Link>
+        <div className="md:mx-17.5 lg:mx-11xl px-4 pb-8" style={{ paddingTop: '840px' }}>
 
-          <div className="flex flex-col md:flex-row gap-8">
+          {/* Poster + Info */}
+          <div className="flex flex-col md:flex-row gap-8 -mt-100 relative z-10">
+
             {/* Poster */}
             {poster && (
               <motion.img
                 src={poster}
                 alt={movie.title}
-                className="w-48 rounded-lg shadow-lg self-start"
+                className="w-48 md:w-56 rounded-2xl shadow-2xl self-start shrink-0"
                 initial={{ opacity: 0, x: -24 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
@@ -102,69 +115,81 @@ export default function MovieDetailPage() {
 
             {/* Info */}
             <motion.div
-              className="flex-1 space-y-4"
+              className="flex-1 flex flex-col gap-4"
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
             >
-              <h1 className="text-3xl font-bold">{movie.title}</h1>
+              {/* Title */}
+              <h1 className="text-display-sm font-bold text-foreground">{movie.title}</h1>
 
-              <div className="flex flex-wrap gap-2 items-center">
-                <Badge variant="secondary">⭐ {movie.vote_average.toFixed(1)}</Badge>
-                <span className="text-sm text-muted-foreground">
-                  {movie.release_date?.slice(0, 4)}
-                </span>
-                {movie.runtime && (
-                  <span className="text-sm text-muted-foreground">
-                    · {formatRuntime(movie.runtime)}
-                  </span>
-                )}
+              {/* Date */}
+              <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                <Calendar size={14} />
+                <span>{formatDate(movie.release_date)}</span>
               </div>
 
-              {movie.genres && (
-                <div className="flex flex-wrap gap-2">
-                  {movie.genres.map((g) => (
-                    <Badge key={g.id} variant="outline">{g.name}</Badge>
-                  ))}
-                </div>
-              )}
-
-              <p className="text-muted-foreground leading-relaxed">{movie.overview}</p>
-
-              <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.03 }} className="inline-block">
-                <Button
+              {/* Buttons */}
+              <div className="flex items-center gap-3">
+                {trailer ? (
+                  <a
+                    href={`https://www.youtube.com/watch?v=${trailer.key}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm px-5 py-2 rounded-full transition-colors"
+                  >
+                    Watch Trailer
+                    <Play size={14} fill="currentColor" />
+                  </a>
+                ) : (
+                  <span className="flex items-center gap-2 bg-primary/40 text-primary-foreground font-semibold text-sm px-5 py-2 rounded-full">
+                    Watch Trailer
+                    <Play size={14} fill="currentColor" />
+                  </span>
+                )}
+                <button
                   onClick={() => favorited ? removeFromFavorites(movie.id) : addToFavorites(movie)}
-                  variant={favorited ? 'destructive' : 'default'}
-                  aria-pressed={favorited}
+                  className="p-2 rounded-full border border-white/20 hover:border-primary hover:text-primary transition-colors text-foreground"
                   aria-label={favorited ? `Remove ${movie.title} from favorites` : `Add ${movie.title} to favorites`}
+                  aria-pressed={favorited}
                 >
-                  {favorited ? '♥ Remove from Favorites' : '♡ Add to Favorites'}
-                </Button>
-              </motion.div>
+                  <Heart size={16} fill={favorited ? 'currentColor' : 'none'} className={favorited ? 'text-primary' : ''} />
+                </button>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl grow self-stretch">
+                  <Star size={20} className="text-yellow-400" fill="currentColor" />
+                  <p className="text-muted-foreground text-xs">Rating</p>
+                  <p className="text-foreground font-bold text-sm">{movie.vote_average.toFixed(1)}/10</p>
+                </div>
+                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl grow self-stretch">
+                  <Video size={20} className="text-foreground" />
+                  <p className="text-muted-foreground text-xs">Genre</p>
+                  <p className="text-foreground font-bold text-sm truncate w-full text-center">{firstGenre}</p>
+                </div>
+                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl grow self-stretch">
+                  <Bot size={20} className="text-foreground" />
+                  <p className="text-muted-foreground text-xs">Age Limit</p>
+                  <p className="text-foreground font-bold text-sm">{ageLimit}</p>
+                </div>
+              </div>
             </motion.div>
           </div>
 
-          {/* Trailer */}
-          {trailer && (
-            <motion.section
-              className="mt-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <h2 className="text-xl font-semibold mb-4">Trailer</h2>
-              <div className="aspect-video max-w-2xl">
-                <iframe
-                  src={`https://www.youtube.com/embed/${trailer.key}`}
-                  title="Trailer"
-                  className="w-full h-full rounded-lg"
-                  allowFullScreen
-                />
-              </div>
-            </motion.section>
-          )}
+          {/* Overview */}
+          <motion.section
+            className="mt-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <h2 className="text-display-xs font-bold mb-3">Overview</h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">{movie.overview}</p>
+          </motion.section>
 
-          {/* Cast */}
+          {/* Cast & Crew */}
           {topCast.length > 0 && (
             <motion.section
               className="mt-10"
@@ -172,40 +197,27 @@ export default function MovieDetailPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.25 }}
             >
-              <h2 className="text-xl font-semibold mb-4">Cast</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
-                {topCast.map((member) => (
-                  <div key={member.id} className="text-center">
+              <h2 className="text-display-xs font-bold mb-4">Cast &amp; Crew</h2>
+              <div className="grid grid-cols-3 gap-x-6 gap-y-5">
+                {topCast.slice(0, 6).map((member) => (
+                  <div key={member.id} className="flex items-center gap-3">
                     <img
-                      src={getImageUrl(member.profile_path, 'w185') ?? 'https://placehold.co/185x278?text=No+Photo'}
+                      src={getImageUrl(member.profile_path, 'w185') ?? 'https://placehold.co/185x278?text=?'}
                       alt={member.name}
-                      className="w-full rounded-lg object-cover aspect-2/3"
+                      className="w-16 h-20 rounded-xl object-cover shrink-0"
                     />
-                    <p className="text-xs font-medium mt-1 truncate">{member.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{member.character}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-foreground truncate">{member.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{member.character}</p>
+                    </div>
                   </div>
                 ))}
               </div>
             </motion.section>
           )}
 
-          {/* Similar Movies */}
-          {similar && similar.results.length > 0 && (
-            <motion.section
-              className="mt-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-            >
-              <h2 className="text-xl font-semibold mb-4">Similar Movies</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {similar.results.slice(0, 10).map((m) => (
-                  <MovieCard key={m.id} movie={m} />
-                ))}
-              </div>
-            </motion.section>
-          )}
         </div>
+        <Footer />
       </div>
     </PageTransition>
   );

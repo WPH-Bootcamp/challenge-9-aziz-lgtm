@@ -53,7 +53,7 @@ export default function Hero({ movie }: Props) {
               <img src={playVector} alt="" className="w-4 h-4" />
             </Button>
             <Button
-              className="w-full rounded-full text-white bg-transparent hover:bg-gray-400/10 hover:scale-101 border border-gray-800 cursor-pointer"
+              className="w-full rounded-full text-white bg-blur hover:bg-gray-400/10 hover:scale-101 border border-gray-800 cursor-pointer"
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
               See Detail
@@ -72,12 +72,12 @@ export default function Hero({ movie }: Props) {
         <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent" />
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-6 pb-20">
-          <motion.div className="max-w-xl space-y-4" {...contentMotion}>
+        <div className="relative z-10 md:mx-17.5 lg:mx-11xl px-6 pb-20">
+          <motion.div className="md:w-158.75 md:h-36 lg:w-158.75 lg:h-66.5 xl:w-158.75 xl:h-66.5 space-y-4" {...contentMotion}>
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
               {movie.title}
             </h1>
-            <p className="text-white/70 text-sm leading-relaxed sm:line-clamp-3">
+            <p className="w-full text-white/70 text-sm leading-relaxed sm:line-clamp-3">
               {movie.overview}
             </p>
             <div className="flex gap-4 pt-2">
