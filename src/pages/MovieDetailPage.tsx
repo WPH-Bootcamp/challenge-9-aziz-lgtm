@@ -71,7 +71,7 @@ export default function MovieDetailPage() {
   return (
     <PageTransition>
       <div className="relative min-h-screen bg-background">
-        <Navbar onSearch={() => {}} />
+        <Navbar />
 
         {/* Backdrop */}
         {backdrop && (

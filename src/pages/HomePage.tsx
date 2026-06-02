@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { movieService } from '@/services/movieService';
 import Navbar from '@/components/Navbar';
+import { useMovieStore } from '@/store/movieStore';
 import Hero from '@/components/Hero';
 import MovieCard from '@/components/MovieCard';
 import MovieCardSkeleton from '@/components/MovieCardSkeleton';
@@ -17,7 +18,7 @@ import dataIsntFound from '@/assets/vector_clip/data_isnt_found.png';
 const SKELETON_COUNT = 5;
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const searchQuery = useMovieStore(s => s.searchQuery);
   const [trendingIndex, setTrendingIndex] = useState(0);
   const [newReleasePage, setNewReleasePage] = useState(1);
   const [allNewReleaseMovies, setAllNewReleaseMovies] = useState<Movie[]>([]);
@@ -106,7 +107,7 @@ export default function HomePage() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-        <Navbar onSearch={setSearchQuery} />
+        <Navbar />
 
         {/* Hero */}
         {!searchQuery && heroMovie && <Hero movie={heroMovie} />}
@@ -149,7 +150,13 @@ export default function HomePage() {
                     >
                       <img src={dataIsntFound} alt="Data not found" className="w-36 h-36 object-contain opacity-80" />
                       <p className="text-white font-semibold text-base">Data Not Found</p>
-                      <p className="text-muted-foreground text-sm">Try other keywords</p>
+                      <button
+                        type="button"
+                        className="text-sm text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-colors"
+                        onClick={() => window.dispatchEvent(new Event('focus-search'))}
+                      >
+                        Try other keywords
+                      </button>
                     </motion.div>
                   )}
                 </>

@@ -4,10 +4,12 @@ import HomePage from '@/pages/HomePage';
 import MovieDetailPage from '@/pages/MovieDetailPage';
 import FavoritesPage from '@/pages/FavoritesPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import Toast from '@/components/Toast';
 
 function App() {
   return (
     <BrowserRouter>
+      <Toast />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movie/:id" element={<MovieDetailPage />} />
