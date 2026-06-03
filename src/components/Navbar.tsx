@@ -31,7 +31,10 @@ export default function Navbar() {
   }, []);
 
   // Close menu on route change
-  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    const id = setTimeout(() => setMenuOpen(false), 0);
+    return () => clearTimeout(id);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handler = () => {
@@ -79,7 +82,7 @@ export default function Navbar() {
       >
         <div className="md:mx-17.5 lg:mx-11xl px-6 py-4 flex items-center justify-between">
           {/* Logo + Nav links */}
-          <div className="flex flex-row lg:items-end lg:gap-20 lg:w-102.5 lg:h-11.5">
+          <div className="flex flex-row md:items-center md:gap-20 md:w-102.5 md:h-11.5">
             <Link to="/" onClick={goHome}>
               <img src={movieLogo} alt="Movie" className="h-8 object-contain" />
             </Link>

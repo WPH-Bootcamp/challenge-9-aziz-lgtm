@@ -55,21 +55,21 @@ interface Props {
 }
 
 export default function FilterBar({ sortBy, onSortChange, activeGenre, onGenreChange }: Props) {
-  const sortDrag = useDragScroll();
-  const genreDrag = useDragScroll();
+  const { ref: sortRef, onMouseDown: sortMouseDown, onMouseMove: sortMouseMove, onMouseUp: sortMouseUp, onMouseLeave: sortMouseLeave, onClickCapture: sortClickCapture } = useDragScroll();
+  const { ref: genreRef, onMouseDown: genreMouseDown, onMouseMove: genreMouseMove, onMouseUp: genreMouseUp, onMouseLeave: genreMouseLeave, onClickCapture: genreClickCapture } = useDragScroll();
 
   return (
     <div className="flex flex-col gap-3">
       {/* SORT row */}
       <div className="relative">
         <div
-          ref={sortDrag.ref}
+          ref={sortRef}
           className="flex items-center gap-2 overflow-x-auto scrollbar-hide select-none cursor-grab"
-          onMouseDown={sortDrag.onMouseDown}
-          onMouseMove={sortDrag.onMouseMove}
-          onMouseUp={sortDrag.onMouseUp}
-          onMouseLeave={sortDrag.onMouseLeave}
-          onClickCapture={sortDrag.onClickCapture}
+          onMouseDown={sortMouseDown}
+          onMouseMove={sortMouseMove}
+          onMouseUp={sortMouseUp}
+          onMouseLeave={sortMouseLeave}
+          onClickCapture={sortClickCapture}
         >
           <span className="text-xs text-white/40 uppercase tracking-wide shrink-0">Sort</span>
           {SORT_OPTIONS.map(({ value, label }) => (
@@ -93,13 +93,13 @@ export default function FilterBar({ sortBy, onSortChange, activeGenre, onGenreCh
       {/* GENRE row */}
       <div className="relative">
         <div
-          ref={genreDrag.ref}
+          ref={genreRef}
           className="flex items-center gap-2 overflow-x-auto scrollbar-hide select-none cursor-grab"
-          onMouseDown={genreDrag.onMouseDown}
-          onMouseMove={genreDrag.onMouseMove}
-          onMouseUp={genreDrag.onMouseUp}
-          onMouseLeave={genreDrag.onMouseLeave}
-          onClickCapture={genreDrag.onClickCapture}
+          onMouseDown={genreMouseDown}
+          onMouseMove={genreMouseMove}
+          onMouseUp={genreMouseUp}
+          onMouseLeave={genreMouseLeave}
+          onClickCapture={genreClickCapture}
         >
           <span className="text-xs text-white/40 uppercase tracking-wide shrink-0">Genre</span>
           <Badge

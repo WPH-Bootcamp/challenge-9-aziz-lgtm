@@ -78,7 +78,8 @@ export default function MovieDetailPage() {
           <motion.div
             style={{
               position: 'absolute',
-              height: '810px',
+             
+            height: '345px',
               left: '0px',
               top: '0px',
               width: '100%',
@@ -96,20 +97,21 @@ export default function MovieDetailPage() {
           </motion.div>
         )}
 
-        <div className="md:mx-17.5 lg:mx-11xl px-4 pb-8" style={{ paddingTop: '840px' }}>
+        <div className="md:mx-17.5 lg:mx-11xl px-4 pb-8" style={{ paddingTop: '345px' }}>
 
           {/* Poster + Info */}
-          <div className="flex flex-col md:flex-row gap-8 -mt-100 relative z-10">
+          <div className="flex flex-row gap-4 md:gap-8 -mt-21 relative z-10">
 
             {/* Poster */}
             {poster && (
               <motion.img
                 src={poster}
                 alt={movie.title}
-                className="w-48 md:w-56 rounded-2xl shadow-2xl self-start shrink-0"
+                className="w-29 h-42.75 md:w-56 md:h-auto rounded-xl md:rounded-2xl shadow-2xl self-start shrink-0 object-cover"
                 initial={{ opacity: 0, x: -24 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
+                
               />
             )}
 
@@ -120,29 +122,26 @@ export default function MovieDetailPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
             >
-              {/* Title */}
-              <h1 className="text-display-sm font-bold text-foreground">{movie.title}</h1>
-
-              {/* Date */}
+              <h1 className="text-xl md:text-display-sm font-bold text-foreground">{movie.title}</h1>
               <div className="flex items-center gap-2 text-muted-foreground text-sm">
                 <Calendar size={14} />
                 <span>{formatDate(movie.release_date)}</span>
               </div>
 
-              {/* Buttons */}
-              <div className="flex items-center gap-3">
+              {/* Desktop only: Buttons */}
+              <div className="hidden md:flex items-center gap-3">
                 {trailer ? (
                   <a
                     href={`https://www.youtube.com/watch?v=${trailer.key}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm px-5 py-2 rounded-full transition-colors"
+                    className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm p-2 w-55 h-13 rounded-full transition-colors"
                   >
                     Watch Trailer
                     <Play size={14} fill="currentColor" />
                   </a>
                 ) : (
-                  <span className="flex items-center gap-2 bg-primary/40 text-primary-foreground font-semibold text-sm px-5 py-2 rounded-full">
+                  <span className="flex items-center justify-center gap-2 bg-primary/40 text-primary-foreground font-semibold text-sm p-2 w-55 h-13 rounded-full">
                     Watch Trailer
                     <Play size={14} fill="currentColor" />
                   </span>
@@ -157,19 +156,19 @@ export default function MovieDetailPage() {
                 </button>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl grow self-stretch">
+              {/* Desktop only: Stats */}
+              <div className="hidden md:grid grid-cols-3 gap-3">
+                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl">
                   <Star size={20} className="text-yellow-400" fill="currentColor" />
                   <p className="text-muted-foreground text-xs">Rating</p>
                   <p className="text-foreground font-bold text-sm">{movie.vote_average.toFixed(1)}/10</p>
                 </div>
-                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl grow self-stretch">
+                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl">
                   <Video size={20} className="text-foreground" />
                   <p className="text-muted-foreground text-xs">Genre</p>
                   <p className="text-foreground font-bold text-sm truncate w-full text-center">{firstGenre}</p>
                 </div>
-                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl grow self-stretch">
+                <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl">
                   <Bot size={20} className="text-foreground" />
                   <p className="text-muted-foreground text-xs">Age Limit</p>
                   <p className="text-foreground font-bold text-sm">{ageLimit}</p>
@@ -177,6 +176,63 @@ export default function MovieDetailPage() {
               </div>
             </motion.div>
           </div>
+
+          {/* Mobile only: Buttons — full width below poster+title */}
+          <motion.div
+            className="flex md:hidden items-center gap-3 mt-6 relative z-10"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            {trailer ? (
+              <a
+                href={`https://www.youtube.com/watch?v=${trailer.key}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm p-2 h-11 rounded-full transition-colors"
+              >
+                Watch Trailer
+                <Play size={14} fill="currentColor" />
+              </a>
+            ) : (
+              <span className="flex-1 flex items-center justify-center gap-2 bg-primary/40 text-primary-foreground font-semibold text-sm p-2 h-11 rounded-full">
+                Watch Trailer
+                <Play size={14} fill="currentColor" />
+              </span>
+            )}
+            <button
+              onClick={() => favorited ? removeFromFavorites(movie.id) : addToFavorites(movie)}
+              className="p-3 rounded-full border border-white/20 hover:border-primary hover:text-primary transition-colors text-foreground"
+              aria-label={favorited ? `Remove ${movie.title} from favorites` : `Add ${movie.title} to favorites`}
+              aria-pressed={favorited}
+            >
+              <Heart size={16} fill={favorited ? 'currentColor' : 'none'} className={favorited ? 'text-primary' : ''} />
+            </button>
+          </motion.div>
+
+          {/* Mobile only: Stats — full width below buttons */}
+          <motion.div
+            className="grid md:hidden grid-cols-3 gap-3 mt-4 relative z-10"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.25 }}
+          >
+            <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl">
+              <Star size={20} className="text-yellow-400" fill="currentColor" />
+              <p className="text-muted-foreground text-xs">Rating</p>
+              <p className="text-foreground font-bold text-sm">{movie.vote_average.toFixed(1)}/10</p>
+            </div>
+            <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl">
+              <Video size={20} className="text-foreground" />
+              <p className="text-muted-foreground text-xs">Genre</p>
+              <p className="text-foreground font-bold text-sm truncate w-full text-center">{firstGenre}</p>
+            </div>
+            <div className="flex flex-col items-center p-5 gap-2 h-36.5 bg-black border border-gray-800 rounded-2xl">
+              <Bot size={20} className="text-foreground" />
+              <p className="text-muted-foreground text-xs">Age Limit</p>
+              <p className="text-foreground font-bold text-sm">{ageLimit}</p>
+            </div>
+          </motion.div>
 
           {/* Overview */}
           <motion.section
@@ -186,7 +242,7 @@ export default function MovieDetailPage() {
             transition={{ duration: 0.4, delay: 0.2 }}
           >
             <h2 className="text-display-xs font-bold mb-3">Overview</h2>
-            <p className="text-muted-foreground text-sm leading-relaxed">{movie.overview}</p>
+            <p className="text-muted-foreground text-sm leading-relaxed md:leading-7.5">{movie.overview}</p>
           </motion.section>
 
           {/* Cast & Crew */}
@@ -198,13 +254,13 @@ export default function MovieDetailPage() {
               transition={{ duration: 0.4, delay: 0.25 }}
             >
               <h2 className="text-display-xs font-bold mb-4">Cast &amp; Crew</h2>
-              <div className="grid grid-cols-3 gap-x-6 gap-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-6 md:gap-y-5">
                 {topCast.slice(0, 6).map((member) => (
                   <div key={member.id} className="flex items-center gap-3">
                     <img
                       src={getImageUrl(member.profile_path, 'w185') ?? 'https://placehold.co/185x278?text=?'}
                       alt={member.name}
-                      className="w-16 h-20 rounded-xl object-cover shrink-0"
+                      className="w-13.75 h-21 md:w-16 md:h-20 rounded-lg md:rounded-xl object-cover shrink-0"
                     />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">{member.name}</p>

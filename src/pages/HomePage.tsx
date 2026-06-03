@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import type { Movie } from '@/types/movie';
+import { useState, useMemo, useRef } from 'react';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Heart, Play } from 'lucide-react';
 import { movieService } from '@/services/movieService';
+import { getImageUrl } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import { useMovieStore } from '@/store/movieStore';
 import Hero from '@/components/Hero';
@@ -15,13 +15,11 @@ import FilterBar, { type SortOption } from '@/components/FilterBar';
 import { Button } from '@/components/ui/button';
 import dataIsntFound from '@/assets/vector_clip/data_isnt_found.png';
 
-const SKELETON_COUNT = 5;
+const SKELETON_COUNT = 6;
 
 export default function HomePage() {
-  const searchQuery = useMovieStore(s => s.searchQuery);
+  const { searchQuery, addToFavorites, removeFromFavorites, isFavorite } = useMovieStore();
   const [trendingIndex, setTrendingIndex] = useState(0);
-  const [newReleasePage, setNewReleasePage] = useState(1);
-  const [allNewReleaseMovies, setAllNewReleaseMovies] = useState<Movie[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>('popularity');
   const [activeGenre, setActiveGenre] = useState<number | null>(null);
 
@@ -31,20 +29,24 @@ export default function HomePage() {
     enabled: !searchQuery,
   });
 
-  const { data: newRelease, isLoading: loadingNewRelease } = useQuery({
-    queryKey: ['movies', 'upcoming', newReleasePage],
-    queryFn: () => movieService.getUpcomingMovies(newReleasePage),
+  const {
+    data: newReleaseData,
+    isLoading: loadingNewRelease,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['movies', 'upcoming'],
+    queryFn: ({ pageParam }) => movieService.getUpcomingMovies(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
     enabled: !searchQuery,
   });
 
-  // Reset to page 1's results instead of appending when newReleasePage resets to 1
-  // (e.g. after a sort/filter change), otherwise stale movies from the old query accumulate.
-  useEffect(() => {
-    if (!newRelease?.results) return;
-    setAllNewReleaseMovies((prev) =>
-      newReleasePage === 1 ? newRelease.results : [...prev, ...newRelease.results]
-    );
-  }, [newRelease, newReleasePage]);
+  const allNewReleaseMovies = useMemo(
+    () => newReleaseData?.pages.flatMap((page) => page.results) ?? [],
+    [newReleaseData],
+  );
 
   const { data: searchResults, isLoading: loadingSearch } = useQuery({
     queryKey: ['movies', 'search', searchQuery],
@@ -74,7 +76,7 @@ export default function HomePage() {
 
   const heroMovie = nowPlaying?.results[0];
 
-  const hasMore = newRelease ? newReleasePage < newRelease.total_pages : false;
+  const hasMore = hasNextPage ?? false;
 
   // drag-to-scroll for trending row (small screens)
   const trendingScrollRef = useRef<HTMLDivElement>(null);
@@ -131,15 +133,74 @@ export default function HomePage() {
                 Results for &quot;{searchQuery}&quot;
               </h2>
               {loadingSearch ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4">
-                  {Array.from({ length: 10 }).map((_, i) => <MovieCardSkeleton key={i} />)}
+                <div className="flex flex-col gap-4">
+                  {Array.from({ length: 5 }).map((_, i) => <MovieCardSkeleton key={i} />)}
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4">
-                    {filteredSearchResults.map((movie) => (
-                      <MovieCard key={movie.id} movie={movie} />
-                    ))}
+                  <div className="flex flex-col divide-y divide-white/10">
+                    {filteredSearchResults.map((movie, i) => {
+                      const poster = getImageUrl(movie.poster_path, 'w342');
+                      const favorited = isFavorite(movie.id);
+                      return (
+                        <motion.div
+                          key={movie.id}
+                          className="flex flex-col gap-3 py-6 md:grid md:grid-cols-[1fr_auto] md:items-start md:gap-x-5"
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.25, delay: i * 0.04 }}
+                        >
+                          {/* Poster + Info */}
+                          <div className="flex gap-3 items-start flex-1">
+                            <img
+                              src={poster ?? 'https://placehold.co/342x513?text=No+Image'}
+                              alt={movie.title}
+                              className="w-26 h-39 md:w-45 md:h-67 object-cover rounded-xl shrink-0"
+                            />
+                            <div className="flex-1 min-w-0 flex flex-col gap-2">
+                              <h3 className="text-white font-bold text-base md:text-lg leading-snug">{movie.title}</h3>
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                <span className="text-xs text-white/70">{movie.vote_average.toFixed(1)}/10</span>
+                              </div>
+                              <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{movie.overview}</p>
+
+                              {/* Desktop: Watch Trailer */}
+                              <button className="hidden md:flex mt-2 self-start items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm p-2 w-50 h-13 rounded-full transition-colors">
+                                Watch Trailer
+                                <Play size={14} fill="currentColor" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Desktop: Heart — direct sibling so it stays in a fixed column */}
+                          <button
+                            onClick={() => favorited ? removeFromFavorites(movie.id) : addToFavorites(movie)}
+                            className="hidden md:flex shrink-0 w-10 h-10 items-center justify-center rounded-full border border-white/20 hover:border-primary hover:text-primary transition-colors text-foreground"
+                            aria-label={favorited ? `Remove from favorites` : `Add to favorites`}
+                          >
+                            <Heart size={16} fill={favorited ? 'currentColor' : 'none'} className={favorited ? 'text-primary' : ''} />
+                          </button>
+
+                          {/* Mobile: Watch Trailer + Heart row */}
+                          <div className="flex md:hidden gap-3">
+                            <button
+                              className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm p-2 h-11 rounded-full transition-colors"
+                            >
+                              Watch Trailer
+                              <Play size={14} fill="currentColor" />
+                            </button>
+                            <button
+                              onClick={() => favorited ? removeFromFavorites(movie.id) : addToFavorites(movie)}
+                              className="w-11 h-11 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-700 hover:border-zinc-500 transition-colors shrink-0"
+                              aria-label={favorited ? `Remove from favorites` : `Add to favorites`}
+                            >
+                              <Heart size={16} fill={favorited ? 'currentColor' : 'none'} className={favorited ? 'text-primary' : 'text-primary'} />
+                            </button>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                   {filteredSearchResults.length === 0 && (
                     <motion.div
@@ -168,7 +229,7 @@ export default function HomePage() {
             <>
               {/* Trending Now — carousel with edge-overlaid buttons and fade */}
               {(() => {
-                const CARDS_PER_PAGE = 5;
+                const CARDS_PER_PAGE = 6;
                 const trendingMovies = nowPlaying?.results ?? [];
                 const visibleTrending = trendingMovies.slice(trendingIndex, trendingIndex + CARDS_PER_PAGE);
                 const canPrev = trendingIndex > 0;
@@ -186,7 +247,7 @@ export default function HomePage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="relative py-4 md:-mr-17.5 lg:mr-0">
+                      <div className="relative py-4">
                         {/* Left fade + prev button */}
                         {canPrev && (
                           <>
@@ -202,38 +263,40 @@ export default function HomePage() {
                           </>
                         )}
 
-                        {/* Cards — single flex row at all breakpoints, 5-col grid on lg+ */}
-                        <div
-                          ref={trendingScrollRef}
-                          className="flex gap-4 overflow-x-auto scrollbar-hide select-none cursor-grab py-3 lg:grid lg:grid-cols-5 lg:overflow-visible lg:py-0 lg:cursor-default"
-                          onMouseDown={onTrendingMouseDown}
-                          onMouseMove={onTrendingMouseMove}
-                          onMouseUp={onTrendingMouseUp}
-                          onMouseLeave={onTrendingMouseUp}
-                          onClickCapture={onTrendingClickCapture}
-                        >
-                          {visibleTrending.map((movie, index) => (
-                            <motion.div
-                              key={movie.id}
-                              className="w-[calc(50vw-2rem)] sm:w-40 shrink-0 lg:w-auto"
-                              initial={{ opacity: 0, x: 20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.04 }}
-                            >
-                              <MovieCard movie={movie} rank={trendingIndex + index + 1} />
-                            </motion.div>
-                          ))}
-                          <span className="shrink-0 w-8 lg:hidden" aria-hidden />
+                        {/* Cards — bleed to the right via negative margin; relative wrapper above keeps buttons in viewport */}
+                        <div className="md:-mr-17.5 lg:-mr-[calc(20vw-4rem)]">
+                          <div
+                            ref={trendingScrollRef}
+                            className="flex gap-4 overflow-x-auto scrollbar-hide select-none cursor-grab py-3 lg:grid lg:grid-cols-6 lg:overflow-visible lg:py-0 lg:cursor-default"
+                            onMouseDown={onTrendingMouseDown}
+                            onMouseMove={onTrendingMouseMove}
+                            onMouseUp={onTrendingMouseUp}
+                            onMouseLeave={onTrendingMouseUp}
+                            onClickCapture={onTrendingClickCapture}
+                          >
+                            {visibleTrending.map((movie, index) => (
+                              <motion.div
+                                key={movie.id}
+                                className="w-[calc(50vw-2rem)] sm:w-40 shrink-0 lg:w-auto"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.04 }}
+                              >
+                                <MovieCard movie={movie} rank={trendingIndex + index + 1} />
+                              </motion.div>
+                            ))}
+                            <span className="shrink-0 w-8 lg:hidden" aria-hidden />
+                          </div>
                         </div>
 
                         {/* Right fade + next button */}
                         {canNext && (
                           <>
-                            <div className="absolute -right-4 -top-4 -bottom-4 w-40 bg-linear-to-l from-background/90 from-20% to-transparent z-30 pointer-events-none" />
+                            <div className="absolute right-0 md:-right-23.5 lg:-right-41 -top-4 -bottom-4 w-40 md:w-56 lg:w-72 bg-linear-to-l from-background/90 from-20% to-transparent z-30 pointer-events-none" />
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="absolute right-3 top-1/2 -translate-y-1/2 z-40 h-10 w-10 rounded-full bg-black/60 border border-white/20 text-white hover:bg-black/80 hover:scale-110 transition-transform"
+                              className="absolute right-0 translate-x-5 md:translate-x-15 top-[45%] -translate-y-1/2 z-40 h-10 w-10 rounded-full bg-black/60 border border-white/20 text-white hover:bg-black/80 hover:scale-110 transition-transform"
                               onClick={() => setTrendingIndex(i => Math.min(trendingMovies.length - CARDS_PER_PAGE, i + CARDS_PER_PAGE))}
                             >
                               <ChevronRight className="w-5 h-5" />
@@ -250,7 +313,7 @@ export default function HomePage() {
               <section>
                 <h2 className="text-xl font-bold text-white mb-6">New Release</h2>
 
-                {loadingNewRelease && newReleasePage === 1 ? (
+                {loadingNewRelease ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4">
                     {Array.from({ length: 10 }).map((_, i) => <MovieCardSkeleton key={i} />)}
                   </div>
@@ -278,10 +341,10 @@ export default function HomePage() {
                         <Button
                           variant="outline"
                           className="rounded-full px-8 border-white/20 text-white hover:bg-white/10"
-                          onClick={() => setNewReleasePage((p) => p + 1)}
-                          disabled={loadingNewRelease}
+                          onClick={() => fetchNextPage()}
+                          disabled={isFetchingNextPage}
                         >
-                          {loadingNewRelease ? 'Loading...' : 'Load More'}
+                          {isFetchingNextPage ? 'Loading...' : 'Load More'}
                         </Button>
                       </div>
                     )}
