@@ -36,7 +36,7 @@ export default function FavoritesPage() {
               <p className="text-muted-foreground text-sm">You don&apos;t have a favorite movie yet</p>
               <Link
                 to="/"
-                className="flex flex-row justify-center items-center p-2 gap-2 w-75 h-13 bg-[#961200] hover:bg-[#961200]/90 rounded-full text-sm font-semibold text-white transition-colors"
+                className="flex flex-row justify-center items-center p-2 gap-2 w-75 h-13 bg-primary hover:bg-primary/90 rounded-full text-sm font-semibold text-white transition-colors"
               >
                 Explore Movie
               </Link>

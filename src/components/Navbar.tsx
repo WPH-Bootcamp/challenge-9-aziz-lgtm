@@ -162,7 +162,7 @@ export default function Navbar() {
       <AnimatePresence>
         {searchOpen && (
           <motion.div
-            className="fixed inset-0 z-50 md:hidden bg-[#0a0d12] flex flex-col"
+            className="fixed inset-0 z-50 md:hidden bg-gray-950 flex flex-col"
             initial={{ opacity: 0, x: '-100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '-100%' }}
@@ -210,7 +210,7 @@ export default function Navbar() {
         {menuOpen && (
           <motion.div
             id="mobile-menu"
-            className="fixed inset-0 z-50 md:hidden bg-[#0a0d12] flex flex-col"
+            className="fixed inset-0 z-50 md:hidden bg-gray-950 flex flex-col"
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}

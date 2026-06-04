@@ -38,22 +38,22 @@ export default function Hero({ movie }: Props) {
           className="relative z-10 -mt-45 flex flex-col gap-6 px-4 pb-6"
           {...contentMotion}
         >
-          <h1 className="font-bold font-poppins text-2xl leading-9 text-[#FDFDFD]">
+          <h1 className="font-bold font-poppins text-2xl leading-9 text-gray-25">
             {movie.title}
           </h1>
-          <p className="font-poppins font-normal text-sm leading-7 text-[#A4A7AE]">
+          <p className="font-poppins font-normal text-sm leading-7 text-gray-400">
             {movie.overview}
           </p>
           <div className="flex flex-col gap-3">
             <Button
-              className="w-full bg-[#961200] hover:bg-primary/70 hover:scale-101 text-white rounded-full gap-2 cursor-pointer"
+              className="w-full bg-primary hover:bg-primary/70 hover:scale-101 text-white rounded-full gap-2 cursor-pointer"
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
               Watch Trailer
               <img src={playVector} alt="" className="w-4 h-4" />
             </Button>
             <Button
-              className="w-full rounded-full text-white bg-blur hover:bg-gray-400/10 hover:scale-101 border border-gray-800 cursor-pointer"
+              className="w-full rounded-full text-white bg-transparent hover:bg-gray-400/10 hover:scale-101 border border-gray-800 cursor-pointer"
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
               See Detail

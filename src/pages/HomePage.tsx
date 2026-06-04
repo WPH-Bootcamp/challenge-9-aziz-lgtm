@@ -195,7 +195,7 @@ export default function HomePage() {
                               className="w-11 h-11 flex items-center justify-center rounded-full bg-zinc-900 border border-zinc-700 hover:border-zinc-500 transition-colors shrink-0"
                               aria-label={favorited ? `Remove from favorites` : `Add to favorites`}
                             >
-                              <Heart size={16} fill={favorited ? 'currentColor' : 'none'} className={favorited ? 'text-primary' : 'text-primary'} />
+                              <Heart size={16} fill={favorited ? 'currentColor' : 'none'} className={favorited ? 'text-primary' : 'text-white/70'} />
                             </button>
                           </div>
                         </motion.div>

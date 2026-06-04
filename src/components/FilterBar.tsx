@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TMDB_GENRES } from '@/lib/constants';
 
 export type SortOption = 'popularity' | 'rating' | 'date' | 'title';
@@ -72,22 +72,16 @@ export default function FilterBar({ sortBy, onSortChange, activeGenre, onGenreCh
           onClickCapture={sortClickCapture}
         >
           <span className="text-xs text-white/40 uppercase tracking-wide shrink-0">Sort</span>
-          {SORT_OPTIONS.map(({ value, label }) => (
-            <Button
-              key={value}
-              size="sm"
-              variant={sortBy === value ? 'default' : 'outline'}
-              className={`h-7 px-3 text-xs rounded-full shrink-0 ${sortBy !== value ? 'border-white/20 text-white/60' : ''}`}
-              onClick={() => onSortChange(value)}
-            >
-              {label}
-            </Button>
-          ))}
+          <Tabs value={sortBy} onValueChange={(v) => onSortChange(v as SortOption)}>
+            <TabsList>
+              {SORT_OPTIONS.map(({ value, label }) => (
+                <TabsTrigger key={value} value={value}>{label}</TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
           <span className="shrink-0 w-8" aria-hidden />
         </div>
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-l from-background to-transparent"
-        />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-l from-background to-transparent" />
       </div>
 
       {/* GENRE row */}

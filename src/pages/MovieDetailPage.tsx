@@ -76,18 +76,8 @@ export default function MovieDetailPage() {
         {/* Backdrop */}
         {backdrop && (
           <motion.div
-            style={{
-              position: 'absolute',
-             
-            height: '345px',
-              left: '0px',
-              top: '0px',
-              width: '100%',
-              borderRadius: '0px',
-              backgroundImage: `url(${backdrop})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
+            className="absolute top-0 left-0 w-full h-86.25 rounded-none bg-cover bg-center"
+            style={{ backgroundImage: `url(${backdrop})` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
@@ -97,7 +87,7 @@ export default function MovieDetailPage() {
           </motion.div>
         )}
 
-        <div className="md:mx-17.5 lg:mx-11xl px-4 pb-8" style={{ paddingTop: '345px' }}>
+        <div className="md:mx-17.5 lg:mx-11xl px-4 pt-86.25 pb-8">
 
           {/* Poster + Info */}
           <div className="flex flex-row gap-4 md:gap-8 -mt-21 relative z-10">
