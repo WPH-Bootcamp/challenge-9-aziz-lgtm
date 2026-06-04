@@ -36,3 +36,4 @@ dist-ssr
 .claude_history
 *.claude
 claude_project.json
+.vercel

@@ -3,6 +3,15 @@
 
 Selamat datang di Challenge 9! Di assignment ini, kalian akan membangun sebuah aplikasi web Movie Explorer menggunakan React, TypeScript, dan berbagai modern tools yang sering digunakan di industri.
 
+**Format Submission:**
+
+```
+Nama: [AZIZ AHMAD FAIZAL ABROR]
+Repository: [https://github.com/WPH-Bootcamp/challenge-8-aziz-lgtm.git]
+Deployment: https://faizalflix.vercel.app/
+Notes: [Feature tambahan: right click to add movie to favorites]
+```
+
 ## Deskripsi Project
 
 Kalian akan membuat aplikasi web yang menampilkan informasi film dari **The Movie Database (TMDB)** API. Aplikasi ini harus mengikuti design yang sudah disediakan di Figma dan menggunakan tech stack yang telah ditentukan.

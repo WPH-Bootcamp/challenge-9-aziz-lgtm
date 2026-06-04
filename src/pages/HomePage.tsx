@@ -248,19 +248,9 @@ export default function HomePage() {
                       </div>
                     ) : (
                       <div className="relative py-4">
-                        {/* Left fade + prev button */}
+                        {/* Left fade */}
                         {canPrev && (
-                          <>
-                            <div className="absolute -left-4 -top-4 -bottom-4 w-40 bg-linear-to-r from-background/90 from-20% to-transparent z-30 pointer-events-none" />
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="absolute left-3 top-1/2 -translate-y-1/2 z-40 h-10 w-10 rounded-full bg-black/60 border border-white/20 text-white hover:bg-black/80 hover:scale-110 transition-transform"
-                              onClick={() => setTrendingIndex(i => Math.max(0, i - CARDS_PER_PAGE))}
-                            >
-                              <ChevronLeft className="w-5 h-5" />
-                            </Button>
-                          </>
+                          <div className="absolute -left-4 -top-4 -bottom-4 w-40 bg-linear-to-r from-background/90 from-20% to-transparent z-30 pointer-events-none" />
                         )}
 
                         {/* Cards — bleed to the right via negative margin; relative wrapper above keeps buttons in viewport */}
@@ -289,20 +279,34 @@ export default function HomePage() {
                           </div>
                         </div>
 
-                        {/* Right fade + next button */}
+                        {/* Right fade */}
                         {canNext && (
-                          <>
-                            <div className="absolute right-0 md:-right-23.5 lg:-right-41 -top-4 -bottom-4 w-40 md:w-56 lg:w-72 bg-linear-to-l from-background/90 from-20% to-transparent z-30 pointer-events-none" />
+                          <div className="absolute right-0 md:-right-23.5 lg:-right-41 -top-4 -bottom-4 w-40 md:w-56 lg:w-72 bg-linear-to-l from-background/90 from-20% to-transparent z-30 pointer-events-none" />
+                        )}
+
+                        {/* Arrow buttons — overlay anchored to poster area only (bottom-16 = py-4 outer + ~48px title) */}
+                        <div className="absolute inset-x-0 top-4 bottom-16 pointer-events-none z-40">
+                          {canPrev && (
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="absolute right-0 translate-x-5 md:translate-x-15 top-[45%] -translate-y-1/2 z-40 h-10 w-10 rounded-full bg-black/60 border border-white/20 text-white hover:bg-black/80 hover:scale-110 transition-transform"
+                              className="pointer-events-auto absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/60 border border-white/20 text-white hover:bg-black/80 hover:scale-110 transition-transform"
+                              onClick={() => setTrendingIndex(i => Math.max(0, i - CARDS_PER_PAGE))}
+                            >
+                              <ChevronLeft className="w-5 h-5" />
+                            </Button>
+                          )}
+                          {canNext && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="pointer-events-auto absolute right-0 translate-x-5 md:translate-x-15 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/60 border border-white/20 text-white hover:bg-black/80 hover:scale-110 transition-transform"
                               onClick={() => setTrendingIndex(i => Math.min(trendingMovies.length - CARDS_PER_PAGE, i + CARDS_PER_PAGE))}
                             >
                               <ChevronRight className="w-5 h-5" />
                             </Button>
-                          </>
-                        )}
+                          )}
+                        </div>
                       </div>
                     )}
                   </section>
