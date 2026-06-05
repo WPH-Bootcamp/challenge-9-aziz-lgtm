@@ -18,7 +18,7 @@ import dataIsntFound from '@/assets/vector_clip/data_isnt_found.png';
 const SKELETON_COUNT = 6;
 
 export default function HomePage() {
-  const { searchQuery, addToFavorites, removeFromFavorites, isFavorite } = useMovieStore();
+  const { searchQuery, addToFavorites, removeFromFavorites, isFavorite, showToast } = useMovieStore();
   const [trendingIndex, setTrendingIndex] = useState(0);
   const [sortBy, setSortBy] = useState<SortOption>('popularity');
   const [activeGenre, setActiveGenre] = useState<number | null>(null);
@@ -73,6 +73,16 @@ export default function HomePage() {
       return b.popularity - a.popularity;
     });
   }, [searchResults, sortBy, activeGenre]);
+
+  async function handleWatchTrailer(movieId: number) {
+    const videos = await movieService.getMovieVideos(movieId);
+    const trailer = videos.results.find(v => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'));
+    if (trailer) {
+      window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank', 'noopener,noreferrer');
+    } else {
+      showToast('No trailer available');
+    }
+  }
 
   const heroMovie = nowPlaying?.results[0];
 
@@ -166,7 +176,7 @@ export default function HomePage() {
                               <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{movie.overview}</p>
 
                               {/* Desktop: Watch Trailer */}
-                              <button className="hidden md:flex mt-2 self-start items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm p-2 w-50 h-13 rounded-full transition-colors">
+                              <button onClick={() => handleWatchTrailer(movie.id)} className="hidden md:flex mt-2 self-start items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm p-2 w-50 h-13 rounded-full transition-colors">
                                 Watch Trailer
                                 <Play size={14} fill="currentColor" />
                               </button>
@@ -185,6 +195,7 @@ export default function HomePage() {
                           {/* Mobile: Watch Trailer + Heart row */}
                           <div className="flex md:hidden gap-3">
                             <button
+                              onClick={() => handleWatchTrailer(movie.id)}
                               className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm p-2 h-11 rounded-full transition-colors"
                             >
                               Watch Trailer

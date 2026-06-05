@@ -9,7 +9,7 @@ export default function Toast() {
     <AnimatePresence>
       {toast.visible && (
         <motion.div
-          className="fixed top-24 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 px-6 h-14 bg-black/60 backdrop-blur-md rounded-full text-white text-sm font-medium whitespace-nowrap shadow-xl"
+          className="fixed top-24 left-1/2 -translate-x-1/2 z-9999 flex items-center gap-3 px-6 h-14 bg-black/60 backdrop-blur-md rounded-full text-white text-sm font-medium whitespace-nowrap shadow-xl"
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
