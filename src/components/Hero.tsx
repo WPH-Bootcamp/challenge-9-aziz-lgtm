@@ -20,7 +20,12 @@ export default function Hero({ movie }: Props) {
   };
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* ── Mobile layout ── */}
       <div className="md:hidden">
         {/* Hero image — 1:1 square with bottom fade */}
@@ -99,6 +104,6 @@ export default function Hero({ movie }: Props) {
           </motion.div>
         </div>
       </div>
-    </>
+    </motion.div>
   );
 }

@@ -1,6 +1,6 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, Heart, Play } from 'lucide-react';
 import { movieService } from '@/services/movieService';
 import { getImageUrl } from '@/lib/utils';
@@ -20,6 +20,7 @@ const SKELETON_COUNT = 6;
 export default function HomePage() {
   const { searchQuery, addToFavorites, removeFromFavorites, isFavorite, showToast } = useMovieStore();
   const [trendingIndex, setTrendingIndex] = useState(0);
+  const [heroIndex, setHeroIndex] = useState(0);
   const [sortBy, setSortBy] = useState<SortOption>('popularity');
   const [activeGenre, setActiveGenre] = useState<number | null>(null);
 
@@ -28,6 +29,13 @@ export default function HomePage() {
     queryFn: () => movieService.getNowPlayingMovies(),
     enabled: !searchQuery,
   });
+
+  useEffect(() => {
+    const movies = nowPlaying?.results;
+    if (!movies?.length) return;
+    const id = setInterval(() => setHeroIndex(i => (i + 1) % movies.length), 6000);
+    return () => clearInterval(id);
+  }, [nowPlaying]);
 
   const {
     data: newReleaseData,
@@ -84,7 +92,7 @@ export default function HomePage() {
     }
   }
 
-  const heroMovie = nowPlaying?.results[0];
+  const heroMovie = nowPlaying?.results[heroIndex];
 
   const hasMore = hasNextPage ?? false;
 
@@ -122,7 +130,11 @@ export default function HomePage() {
         <Navbar />
 
         {/* Hero */}
-        {!searchQuery && heroMovie && <Hero movie={heroMovie} />}
+        {!searchQuery && heroMovie && (
+          <AnimatePresence mode="wait">
+            <Hero key={heroMovie.id} movie={heroMovie} />
+          </AnimatePresence>
+        )}
 
         <main className="md:mx-17.5 lg:mx-11xl px-6 py-10 space-y-14">
 
